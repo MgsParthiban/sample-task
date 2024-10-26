@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejsapp
+  labels:
+    app: mydeployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mydeployment
+  template:
+    metadata:
+      labels:
+        app: mydeployment
+    spec:
+      containers:
+      - name: mydepcont
+        image: parthitk/task:nodejs
+        ports:
+        - containerPort: 3005
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mydeployment-service
+spec:
+  selector:
+    app: mydeployment
+  ports:
+    - protocol: TCP
+      port: 80              # Port on the service
+      targetPort: 3005       # Port your Pod is exposing
+      nodePort: 30009        # Node port (range: 30000-32767)
+  type: NodePort
